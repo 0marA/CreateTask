@@ -3,21 +3,38 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class Wardle {
-    public static boolean stop;
     public static ArrayList<String> words;
+    public static Scanner scanner = new Scanner(System.in);
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_YELLOW = "\u001B[33m";
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static void main(String[] args) {
         gameIntroduction();
-        if (!stop) {
-            checkGuess("chairs", "czasih");
+        String wordToGuess = pickRandomWord();
+        String playerGuess = readInput();
+        //checkGuess(wordToGuess, readInput());
+    }
+
+    public static String readInput() {
+        boolean stop = false;
+        String word = "";
+        while (!stop) {
+            System.out.print("Enter a six letter word: ");
+            word = scanner.next();
+            if (word.length() == 6) {
+                scanner.close();
+                return word.toLowerCase();
+            } else {
+                System.out.println("Your word has to be six letters!");
+                continue;
+            }
         }
+        return word;
     }
 
     /**
-     * Adds random words to an array for the player to guess
+     * Adds words to an array for the player to guess
      */
     
     public static void addWords() {
@@ -84,13 +101,11 @@ public class Wardle {
      */
 
     public static void gameIntroduction() {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to Wordle! The object of the game is to submit guess the SIX letter word that the computer knows."
         + " You will have six tries to guess the word and each time you enter a letter, the output will tell you if the letters "
         + "you guessed are in the word, and if they are in the correct position. If you're ready, hit Enter to start!");
         if (scanner.nextLine() == "") {
             addWords();
         }
-        scanner.close();
     }
 }
