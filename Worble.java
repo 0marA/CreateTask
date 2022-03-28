@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-public class Wardle {
+public class Worble {
     public static ArrayList<String> words;
     public static ArrayList<Character> correctLetters = new ArrayList<Character>();
     public static Scanner scanner = new Scanner(System.in);
@@ -31,10 +31,9 @@ public class Wardle {
      */
 
     public static String readInput() {
-        boolean stop = false;
         String word = "";
         numOfAttempts++;
-        while (!stop) {
+        while (true) {
             System.out.print(numOfAttempts + ". Enter a six letter word: ");
             word = scanner.next();
             if (word.length() == 6) {
@@ -44,7 +43,6 @@ public class Wardle {
                 continue;
             }
         }
-        return word;
     }
 
     /**
@@ -54,13 +52,14 @@ public class Wardle {
     public static void addWords() {
         words = new ArrayList<String>();
         words.add("laptop");
-        words.add("abacus");
-        words.add("baboon");
-        words.add("cabana");
+        words.add("golfer");
+        words.add("famous");
+        words.add("goblin");
         words.add("fabric");
-        words.add("rabbit");
+        words.add("burlap");
     }
 
+    
     /**
     * @return A random word from the word list
     */
@@ -119,9 +118,11 @@ public class Wardle {
      */
 
     public static void gameIntroduction() {
-        System.out.println("Welcome to Wordle! The object of the game is to submit guess the SIX letter word that the computer knows."
+        System.out.println();
+        System.out.println("Welcome to Worble! The object of the game is to submit guess the SIX letter word that the computer knows."
         + " You will have six tries to guess the word and each time you enter a letter, the output will tell you if the letters "
-        + "you guessed are in the word, and if they are in the correct position. If you're ready, hit Enter to start!");
+        + "you guessed are in the word, and if they are in the correct position. Also, none of the "
+        + "words have the same letter twice. If you're ready, hit Enter to start!");
         if (scanner.nextLine() == "") {
             addWords();
         }
