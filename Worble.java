@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Worble {
     public static ArrayList<String> words;
     public static ArrayList<Character> correctLetters = new ArrayList<Character>();
+    public static ArrayList<Character> letterPool = new ArrayList<Character>();
     public static Scanner scanner = new Scanner(System.in);
     public boolean won = false;
     public static int numOfAttempts = 0;
@@ -14,13 +15,14 @@ public class Worble {
 
     public static void main(String[] args) {
         gameIntroduction();
+        fillLetterPool();
         String wordToGuess = pickRandomWord();
         for (int i = 0; i < 6; i++) {
             correctLetters.clear();
             checkGuess(wordToGuess, readInput());
             if (correctLetters.size() == 6) break;
         }
-        if (correctLetters.size() == 6) System.out.println("Correct!");
+        if (correctLetters.size() == 6) System.out.println("Correct! Game over!");
         else System.out.println("Sorry, but you lose :(");
 
     }
@@ -76,30 +78,35 @@ public class Worble {
      */
 
     public static void checkGuess(String word, String playerGuess) {
-        ArrayList<Character> wordChars = new ArrayList<Character>();
-        ArrayList<Character> playerGuessChars = new ArrayList<Character>();
+        ArrayList<Character> wordToGuessChars = new ArrayList<Character>();
 
         // Splits the String of the word to guess into an ArrayList of characters
         for (int i = 0; i < 6; i++) {
-            wordChars.add(word.charAt(i));
-        }
-
-        // Splits the String of the players guess into an ArrayList of characters
-        for (int j = 0; j < 6; j++) {
-            playerGuessChars.add(playerGuess.charAt(j));
+            wordToGuessChars.add(word.charAt(i));
         }
 
         
         for (int k = 0; k < 6; k++) {
             // Correct letter and in the correct spot
-            if (wordChars.get(k).equals(playerGuessChars.get(k))) printOutput(ANSI_GREEN, playerGuessChars.get(k));
+            if (wordToGuessChars.get(k).equals(playerGuess.charAt(k))) {
+                printOutput(ANSI_GREEN, playerGuess.charAt(k));
+                printOutput(ANSI_RESET, ' ');
+            }
             // Correct letter, but in the wrong spot
-            else if (wordChars.contains(playerGuessChars.get(k))) printOutput(ANSI_YELLOW, playerGuessChars.get(k));
+            else if (wordToGuessChars.contains(playerGuess.charAt(k))) {
+                printOutput(ANSI_YELLOW, playerGuess.charAt(k));
+                printOutput(ANSI_RESET, ' ');
+            }
             // Not a letter in the word
-            else printOutput(ANSI_RESET, playerGuessChars.get(k));
+            else {
+                printOutput(ANSI_RESET, playerGuess.charAt(k));
+                printOutput(ANSI_RESET, ' ');
+                removeLetter(playerGuess.charAt(k));
+            }
         }
 
         System.out.println();
+        System.out.println(letterPool);
     }
 
     /**
@@ -110,7 +117,7 @@ public class Worble {
 
     public static void printOutput(String printColor, char letter) {
         if (printColor.equals(ANSI_GREEN)) correctLetters.add(letter);
-        System.out.print(printColor + letter + ANSI_RESET);
+        System.out.print(printColor + letter);
     }
 
     /**
@@ -119,12 +126,26 @@ public class Worble {
 
     public static void gameIntroduction() {
         System.out.println();
-        System.out.println("Welcome to Worble! The object of the game is to submit guess the SIX letter word that the computer knows."
-        + " You will have six tries to guess the word and each time you enter a letter, the output will tell you if the letters "
-        + "you guessed are in the word, and if they are in the correct position. Also, none of the "
+        System.out.println(ANSI_RESET+ "Welcome to Worble! The object of the game is to submit guess the SIX letter word that the computer knows."
+        + " You will have six tries to guess the word and each time you enter a letter, the output will tell \nyou if the letters "
+        + "you guessed are in the word, and if they are in the correct position based on letters that are in the word and in the "
+        + "correct position are green, in the wrong position yellow, and \nletters not in the word at all white. Also, note that none of the "
         + "words have the same letter twice. If you're ready, hit Enter to start!");
-        if (scanner.nextLine() == "") {
-            addWords();
-        }
+        if (scanner.nextLine() == "") addWords(); else gameIntroduction();
+    }
+
+    public static void fillLetterPool() {
+        for(char ch = 'a'; ch <= 'z'; ++ch)// fills alphabet array with the alphabet
+        {
+            letterPool.add(ch);
+        } 
+    }
+
+    /**
+     * Removes a letter from the pool of letters to guess
+     */
+    public static void removeLetter(char letter) {
+        if (!letterPool.contains(letter)) return;
+        else letterPool.remove(Character.valueOf(letter));
     }
 }
